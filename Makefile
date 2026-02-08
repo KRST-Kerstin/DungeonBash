@@ -1,28 +1,36 @@
 # Makefile for Dungeon Bash
-#
-# Linux/gcc only; I'm writing this in riceboy-hacker mode.  Deal.
 
 OBJS=bmagic.o combat.o display.o main.o map.o misc.o monsters.o mon2.o objects.o permobj.o permons.o pmon2.o rng.o u.o vector.o
 
 GAME=dungeonbash
-# MPR: per <lj user="ewx">, users are advised to remove -Werror when
-# building on Darwin due to a bug in Darwin's version of "ncurses.h".
-#
-# It is apparently possible to build this code for Windows XP, although I have
-# no details.
+
+OS ?= $(shell uname -s)
+
 MAJVERS=1
 MINVERS=7
-CFLAGS=-c -g -Wall -Wstrict-prototypes -Wwrite-strings -Wmissing-prototypes -Werror -Wredundant-decls -Wunreachable-code -DMAJVERS=$(MAJVERS) -DMINVERS=$(MINVERS)
+ifeq ($(OS),Linux)
+	CFLAGS=-c -g -Wall -Wstrict-prototypes -Wwrite-strings -Wmissing-prototypes -Wredundant-decls -Wunreachable-code -DMAJVERS=$(MAJVERS) -DMINVERS=$(MINVERS)
+endif
+ifeq ($(OS), Darwin)
+	CFLAGS=-c -g -Wall -Wstrict-prototypes -Wwrite-strings -Wmissing-prototypes -Wredundant-decls -Wunreachable-code -DMAJVERS=$(MAJVERS) -DMINVERS=$(MINVERS)
+endif
 LINKFLAGS=-lpanel -lncurses -g
 
 all: $(GAME)
 
+.DELETE_ON_ERROR:
 $(GAME): $(OBJS)
 	$(CC) $(OBJS) $(LINKFLAGS) -o $(GAME)
 
+.PHONY: archive
 archive: clean
 	(cd .. && tar cvzf dungeonbash-$(MAJVERS).$(MINVERS).tar.gz dungeonbash-$(MAJVERS).$(MINVERS))
 
+.PHONY: run
+run: $(GAME)
+	./$(GAME)
+
+.PHONY: clean
 clean:
 	-rm -f *.o $(GAME) dunbash.log dunbash.sav.gz
 
