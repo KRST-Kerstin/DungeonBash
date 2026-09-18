@@ -49,9 +49,10 @@ run: $(GAME)
 ARCHIVE_DIR = dungeonbash-$(MAJVERS).$(MINVERS)-$(OS)
 
 archive: clean
-	(cd .. && cp -R $(CURDIR) $(ARCHIVE_DIR) \
-		&& tar cvzf $(ARCHIVE_DIR).tar.gz $(ARCHIVE_DIR) \
-		&& rm -rf $(ARCHIVE_DIR))
+	mkdir -p /tmp/$(ARCHIVE_DIR) \
+		&& cp -R . /tmp/$(ARCHIVE_DIR) \
+		&& tar cvzf $(ARCHIVE_DIR).tar.gz -C /tmp $(ARCHIVE_DIR) \
+		&& rm -rf /tmp/$(ARCHIVE_DIR)
 
 clean:
 	rm -f *.o *.d $(GAME) dunbash.log dunbash.sav.gz
