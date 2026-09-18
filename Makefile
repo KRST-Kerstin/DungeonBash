@@ -46,7 +46,7 @@ $(GAME): $(OBJS)
 run: $(GAME)
 	./$(GAME)
 
-ARCHIVE_DIR = dungeonbash-$(MAJVERS).$(MINVERS)
+ARCHIVE_DIR = dungeonbash-$(MAJVERS).$(MINVERS)-$(OS)
 
 archive: clean
 	(cd .. && cp -R $(CURDIR) $(ARCHIVE_DIR) \
