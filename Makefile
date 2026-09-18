@@ -29,7 +29,7 @@ endif
 SRCS = $(wildcard *.c)
 OBJS = $(SRCS:.c=.o)
 
-.PHONY: all run clean archive
+.PHONY: all run clean archive dist
 
 all: $(GAME)
 
@@ -46,13 +46,18 @@ $(GAME): $(OBJS)
 run: $(GAME)
 	./$(GAME)
 
-ARCHIVE_DIR = dungeonbash-$(MAJVERS).$(MINVERS)-$(OS)
+# Full source archive, kept for future use (not used by CI/release)
+ARCHIVE_DIR = dungeonbash-$(MAJVERS).$(MINVERS)
 
 archive: clean
 	mkdir -p /tmp/$(ARCHIVE_DIR) \
 		&& cp -R . /tmp/$(ARCHIVE_DIR) \
 		&& tar cvzf $(ARCHIVE_DIR).tar.gz -C /tmp $(ARCHIVE_DIR) \
 		&& rm -rf /tmp/$(ARCHIVE_DIR)
+
+# Release binary, renamed per OS, attached directly to GitHub Releases (no tar)
+dist: $(GAME)
+	cp $(GAME) $(GAME)-$(OS)
 
 clean:
 	rm -f *.o *.d $(GAME) dunbash.log dunbash.sav.gz
